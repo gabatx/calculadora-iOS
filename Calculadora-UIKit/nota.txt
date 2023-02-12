@@ -1,0 +1,59 @@
+Programar sin storyboard:
+
+ - Borramos el storyBoard
+ - Nos vamos info.plist y borramos la referencia StoryBoard Name que está en:
+
+    Application Scene Manifest/Scene Configuration/Application Session Role/Item 0/Storyboard Name
+
+ - Nos vamos a el SceneDelegate y modificamos la función scene (la primera):
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        // Realizamos una instancia de UIWindow pasándole la escena en la que estamos
+        let window = UIWindow(windowScene: windowScene)
+        let viewController = HomeViewController() (si queremos hacerlo con xib deberíamos plantearnos crear antes un xib y un viewController)
+        window.rootViewController = viewController
+        self.window = window
+        window.makeKeyAndVisible()
+    }
+- Creamos un xib y la clase a la vez, pulsando sobre new file/cocoa touch class y marcamos la casilla de xib.
+- Nos vamos al controlador que queremos que inicie y añadimos los dos inicializadores necesarios para trabajar sin storyBoard
+
+    init(){
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
+- Si pulsamos sobre el xib y pulsamos sobre "File´s Owner", podemos ver a la derecha en Custom Class a que controlador pertenece.
+
+// INSTANCIAR UN XIB:
+// Fuente: https://www.youtube.com/watch?v=wngL_GzuA7E
+
+- Cuando queremos instanciar un xib debemos hacerlo con un inicializador especial:
+
+    let viewcontroller = ViewController(nibName: String?, bundle: Bundle?)
+        - nibName: String? = "nombreArchivoXibDondeQueremosIr" // Debemos poner el nombre de nuestro archivo xib.
+            - nib: Es lo que se genera al compilar el xib. Cuando queremos  usar los xib por código, ahí veremos que siempre
+              aparecen inicializados o nombres de métodos con el nombre del nib. nib es un acrónimo que significa "Next step Interface Builder".
+              Los xib se modifican en el interface builder. La parte gráfica es xib y la del código es nib.
+              Cuando entramos a tocar el código de un xib, veremos que se nos abre un archivo con extensión .nib.
+            - Name: Es el nombre del xib
+            - xib: Es el archivo que se crea en el proyecto (XML). En el interfaz builder se puede ver como se ve el xib.
+        - bundle: Bundle? = nil
+            let viewcontroller = ViewController(nibName: "CustomView", bundle: nil)
+            self.present(viewcontroller, animated: true)
+
+// UIView y que su representación sea un xib:
+
+- Al hacerlo de esta manera podemos usar esta vista en cualquier parte de la aplicación, ya que no está asociada a un controlador.
+- También podemos usarlo en diferentes ViewControllers ya que no está asociada a ninguno.
+- Es útil porque un cambio en esa vista se modificaría en todas las partes donde se use.
+- Podemos usar el xib como si fuera una vista, es decir, podemos añadirlo a un stackView, a un scrollView, etc.
+- Podemos crear una view creada con un xib que se utilizará en nuestro xib del viewController que hayamos creado anteriormente
+  y también en nuestro storyBoard.
+
